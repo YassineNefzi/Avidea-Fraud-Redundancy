@@ -1,9 +1,14 @@
+"""This module contains the Streamlit app for the Fraud Detection App."""
+
 import streamlit as st
 import pandas as pd
 from io import StringIO
 from utils.preprocessor import process_file, flatten_dataframe
 
+
 def main():
+    """Main function of the Streamlit app."""
+
     st.title("Fraud Detection App")
 
     uploaded_file = st.file_uploader("Upload CSV", type="csv")
@@ -17,13 +22,17 @@ def main():
 
         relevant_columns = st.multiselect(
             "Select Columns for Combination Analysis",
-            options=df_flattened.columns.tolist()
+            options=df_flattened.columns.tolist(),
         )
 
         group_column = st.selectbox(
             "Select Column to Group By",
             options=df_flattened.columns.tolist(),
-            index=df_flattened.columns.tolist().index('report_id') if 'report_id' in df_flattened.columns else 0
+            index=(
+                df_flattened.columns.tolist().index("report_id")
+                if "report_id" in df_flattened.columns
+                else 0
+            ),
         )
 
         if st.button("Process"):
@@ -31,15 +40,18 @@ def main():
                 st.error("Please select at least one column.")
             else:
                 output_file = process_file(df_flattened, relevant_columns, group_column)
-                st.success(f"Redundancy analysis completed. Download the result file below.")
-                
+                st.success(
+                    f"Redundancy analysis completed. Download the result file below."
+                )
+
                 with open(output_file, "rb") as file:
                     st.download_button(
                         label="Download CSV",
                         data=file,
                         file_name="combined_redundancies_across_reports.csv",
-                        mime="text/csv"
+                        mime="text/csv",
                     )
+
 
 if __name__ == "__main__":
     main()
