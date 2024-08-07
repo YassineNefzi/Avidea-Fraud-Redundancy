@@ -2,8 +2,9 @@
 
 import pandas as pd
 
-from data_loader import DataLoader
-from ..modules.redundancy_checker import RedundancyChecker
+from .data_loader import DataLoader
+from modules.redundancy_checker import RedundancyChecker
+from config.constants import OUTPUT_FILE
 
 
 def flatten_dataframe(df):
@@ -27,7 +28,7 @@ def process_file(df_flattened, relevant_columns, group_column):
     checker = RedundancyChecker(df_filtered, relevant_columns, group_column)
     checker.preprocess()
 
-    output_file = "redundancies_dataframe/combined_redundancies_across_reports.csv"
+    output_file = OUTPUT_FILE
     checker.save_results(output_file)
 
     return output_file

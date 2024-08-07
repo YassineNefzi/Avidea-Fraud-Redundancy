@@ -1,7 +1,7 @@
 """Module for loading and flattening data."""
 
 import pandas as pd
-from flatten_json import flatten_json_column
+from .flatten_json import flatten_json_column
 
 
 class DataLoader:
