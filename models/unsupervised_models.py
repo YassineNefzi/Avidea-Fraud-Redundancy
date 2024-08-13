@@ -45,8 +45,26 @@ def create_pipeline(model_name):
             ("scaler", StandardScaler()),
             (
                 "dim_reduction",
-                PCA(n_components=2),
-            ),  # Reduce dimensions for visualization
-            ("model", model),
+                PCA(n_components=2),  # Reduce dimensions for visualization
+            ),
         ]
     )
+
+
+def train_model(model, df):
+    """
+    Train the unsupervised model.
+    For KNN, return the neighbors as predictions. For clustering models, return cluster labels.
+    """
+    if hasattr(model, "fit_predict"):
+        predictions = model.fit_predict(df)
+    else:
+        model.fit(df)
+        if hasattr(model, "kneighbors"):
+            predictions = model.kneighbors(df)[
+                1
+            ]  # For KNN, use neighbors as indicators
+        else:
+            raise ValueError("Unsupported model type for predictions.")
+
+    return predictions

@@ -5,16 +5,8 @@ import pandas as pd
 from .data_loader import DataLoader
 from modules.redundancy_checker import RedundancyChecker
 from config.constants import OUTPUT_FILE
-
-
-def flatten_dataframe(df):
-    """Flatten the JSON columns in the DataFrame."""
-
-    if "report_id" not in df.columns:
-        raise KeyError("Column not found: report_id")
-
-    data_loader = DataLoader(df)
-    return data_loader.load_and_flatten()
+from .preprocessing_functions import to_dataframe, to_numerical
+from models.pipeline import preprocessing_pipeline
 
 
 def process_file(df_flattened, relevant_columns, group_column):
@@ -32,3 +24,18 @@ def process_file(df_flattened, relevant_columns, group_column):
     checker.save_results(output_file)
 
     return output_file
+
+
+def preprocessor(df):
+    """Function to pre-process the data.
+    Args:
+    df (pd.DataFrame): Input DataFrame.
+    Returns:
+    pd.DataFrame: DataFrame containing the pre-processed data.
+    """
+    # df_expanded = flatten_json_column(df, "vehicles")
+    # df_expanded = flatten_json_column(df_expanded, "casualties")
+    df_transformed = preprocessing_pipeline.fit_transform(df)
+    df_transformed = to_dataframe(df_transformed)
+    df_transformed = to_numerical(df_transformed)
+    return df_transformed
