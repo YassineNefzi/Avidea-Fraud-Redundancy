@@ -6,7 +6,7 @@ import json
 
 def flatten_json_column(df, column_name):
     """Flatten a JSON column in a DataFrame."""
-    
+
     df[column_name] = df[column_name].apply(json.loads)
 
     df_exploded = df.explode(column_name)
