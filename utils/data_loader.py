@@ -10,7 +10,7 @@ class DataLoader:
     def __init__(self, input_data):
         self.input_data = input_data
 
-    def load_and_flatten(self):
+    def load_and_flatten(self) -> pd.DataFrame:
         data = self.input_data
         if "vehicles" in data.columns:
             data = flatten_json_column(data, "vehicles")

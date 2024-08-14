@@ -9,7 +9,7 @@ from .preprocessing_functions import to_dataframe, to_numerical
 from models.pipeline import preprocessing_pipeline
 
 
-def process_file(df_flattened, relevant_columns, group_column):
+def process_file(df_flattened: pd.DataFrame, relevant_columns: str, group_column: str):
     """Process the flattened DataFrame for redundancy analysis."""
 
     if group_column not in df_flattened.columns:
@@ -26,16 +26,16 @@ def process_file(df_flattened, relevant_columns, group_column):
     return output_file
 
 
-def preprocessor(df):
+def preprocessor(df: pd.DataFrame) -> pd.DataFrame:
     """Function to pre-process the data.
     Args:
     df (pd.DataFrame): Input DataFrame.
     Returns:
     pd.DataFrame: DataFrame containing the pre-processed data.
     """
-    # df_expanded = flatten_json_column(df, "vehicles")
-    # df_expanded = flatten_json_column(df_expanded, "casualties")
+
     df_transformed = preprocessing_pipeline.fit_transform(df)
     df_transformed = to_dataframe(df_transformed)
     df_transformed = to_numerical(df_transformed)
+
     return df_transformed

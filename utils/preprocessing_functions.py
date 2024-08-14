@@ -14,7 +14,7 @@ from config.constants import (
 )
 
 
-def flatten_json_column(df, column_name) -> pd.DataFrame:
+def flatten_json_column(df: pd.DataFrame, column_name: str) -> pd.DataFrame:
     """Function to flatten a JSON column in a DataFrame.
     Args:
     df (pd.DataFrame): Input DataFrame.
@@ -69,7 +69,7 @@ def to_dataframe(df) -> pd.DataFrame:
     return df_transformed
 
 
-def to_numerical(df):
+def to_numerical(df: pd.DataFrame) -> pd.DataFrame:
     """Function to convert columns to numerical after the pipeline.
     Args:
     df (pd.DataFrame): Input DataFrame.
@@ -92,7 +92,7 @@ def apply_pca(df):
     return df_pca, pca.explained_variance_ratio_
 
 
-def plot_pca(pca_result, explained_variance, clusters):
+def plot_pca(pca_result, explained_variance, clusters) -> None:
     """
     Plot PCA results.
     """

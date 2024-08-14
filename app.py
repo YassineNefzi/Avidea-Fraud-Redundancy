@@ -2,9 +2,6 @@
 
 import streamlit as st
 import pandas as pd
-import matplotlib.pyplot as plt
-import numpy as np
-from io import StringIO
 
 from utils.preprocessor import process_file
 from utils.flatten_df import flatten_dataframe
@@ -21,12 +18,10 @@ def main():
     if uploaded_file is not None:
         df = pd.read_csv(uploaded_file)
 
-        # Step 1: Flatten JSON columns
         df_flattened = flatten_dataframe(df)
         st.write("Flattened DataFrame:")
         st.write(df_flattened.head())
 
-        # Step 2: Select columns for redundancy analysis
         relevant_columns = st.multiselect(
             "Select Columns for Combination Analysis",
             options=df_flattened.columns.tolist(),
@@ -80,15 +75,13 @@ def main():
                 if model_name in [
                     "DBSCAN",
                     "KMeans",
-                ]:  # Add more clustering models if needed
+                ]:
                     clusters = predictions
                 else:
                     clusters = None
 
-                # Apply PCA for visualization
                 pca_result, explained_variance = apply_pca(df_preprocessed)
 
-                # Plot PCA results
                 st.write("PCA Plot:")
                 plot_pca(pca_result, explained_variance, clusters)
 

@@ -1,7 +1,9 @@
+import pandas as pd
+
 from .data_loader import DataLoader
 
 
-def flatten_dataframe(df):
+def flatten_dataframe(df: pd.DataFrame) -> pd.DataFrame:
     """Flatten the JSON columns in the DataFrame."""
 
     if "report_id" not in df.columns:

@@ -8,13 +8,15 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 
+import pandas as pd
+
 from .pipeline import preprocessing_pipeline
 
 
-def get_model(model_name):
+def get_model(model_name: str):
     """
     Get an unsupervised model by name.
-    Supported models:
+    Supported models and their default parameters:
     - KNN: n_neighbors=5
     - DBSCAN: eps=0.5, min_samples=5
     - One-Class SVM: kernel="rbf", gamma=0.1, nu=0.05
@@ -33,25 +35,7 @@ def get_model(model_name):
         raise ValueError(f"Unknown model name: {model_name}")
 
 
-def create_pipeline(model_name):
-    """
-    Create a pipeline for an unsupervised model by name.
-    The pipeline includes preprocessing, scaling, dimensionality reduction, and the model.
-    """
-    model = get_model(model_name)
-    return Pipeline(
-        [
-            ("preprocessing", preprocessing_pipeline),
-            ("scaler", StandardScaler()),
-            (
-                "dim_reduction",
-                PCA(n_components=2),  # Reduce dimensions for visualization
-            ),
-        ]
-    )
-
-
-def train_model(model, df):
+def train_model(model, df: pd.Dataframe):
     """
     Train the unsupervised model.
     For KNN, return the neighbors as predictions. For clustering models, return cluster labels.
@@ -61,9 +45,7 @@ def train_model(model, df):
     else:
         model.fit(df)
         if hasattr(model, "kneighbors"):
-            predictions = model.kneighbors(df)[
-                1
-            ]  # For KNN, use neighbors as indicators
+            predictions = model.kneighbors(df)[1]
         else:
             raise ValueError("Unsupported model type for predictions.")
 
