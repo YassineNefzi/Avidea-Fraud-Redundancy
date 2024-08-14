@@ -3,11 +3,11 @@
 import streamlit as st
 import pandas as pd
 
-from utils.preprocessor import process_file
-from utils.flatten_df import flatten_dataframe
-from utils.preprocessor import preprocessor
-from utils.pca_functions import apply_pca, plot_pca
-from models.unsupervised_models import train_model, get_model
+from src.utils.preprocessor import process_file
+from src.utils.flatten_df import flatten_dataframe
+from src.utils.preprocessor import preprocessor
+from src.utils.pca_functions import apply_pca, plot_pca
+from src.models.unsupervised_models import train_model, get_model
 
 
 def main():

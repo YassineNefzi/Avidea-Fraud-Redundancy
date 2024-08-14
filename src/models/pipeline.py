@@ -5,7 +5,7 @@ from sklearn.impute import SimpleImputer
 from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import StandardScaler
 
-from utils.preprocessing_classes import (
+from ..utils.preprocessing_classes import (
     DropColumns,
     DebugStep,
     ReplaceMissingWithNaN,
@@ -16,7 +16,7 @@ from utils.preprocessing_classes import (
     CustomOrdinalEncoder,
 )
 
-from config.constants import (
+from ..config.constants import (
     IRRELVANT_COLS,
     NUMERICAL_COLS,
     CATEGORICAL_COLS,

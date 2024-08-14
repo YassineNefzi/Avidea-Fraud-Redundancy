@@ -3,7 +3,7 @@
 import pandas as pd
 import json
 
-from config.constants import (
+from ..config.constants import (
     NUMERICAL_COLS,
     CATEGORICAL_COLS,
     PLATE_NUMBER_FEATURES,

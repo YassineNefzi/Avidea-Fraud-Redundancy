@@ -6,7 +6,7 @@ import streamlit as st
 def apply_pca(df):
     """
     Apply PCA to the dataframe.
-    Retruns the PCA results and the explained variance ratio.
+    Returns the PCA results and the explained variance ratio.
     """
     pca = PCA(n_components=2)
     df_pca = pca.fit_transform(df)
@@ -24,3 +24,7 @@ def plot_pca(pca_result, explained_variance, clusters) -> None:
     plt.ylabel("PCA Component 2")
     plt.colorbar(label="Cluster")
     st.pyplot(plt)
+
+
+def investigate_pca():
+    pass
