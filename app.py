@@ -6,7 +6,7 @@ import pandas as pd
 from utils.preprocessor import process_file
 from utils.flatten_df import flatten_dataframe
 from utils.preprocessor import preprocessor
-from utils.preprocessing_functions import apply_pca, plot_pca
+from utils.pca_functions import apply_pca, plot_pca
 from models.unsupervised_models import train_model, get_model
 
 

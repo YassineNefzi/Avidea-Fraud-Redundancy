@@ -1,16 +1,11 @@
 """Unsupervised models for anomaly detection."""
 
-from sklearn.neighbors import NearestNeighbors, LocalOutlierFactor
+from sklearn.neighbors import NearestNeighbors
 from sklearn.ensemble import IsolationForest
 from sklearn.svm import OneClassSVM
-from sklearn.cluster import DBSCAN, KMeans
-from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import StandardScaler
-from sklearn.decomposition import PCA
+from sklearn.cluster import DBSCAN
 
 import pandas as pd
-
-from .pipeline import preprocessing_pipeline
 
 
 def get_model(model_name: str):
@@ -35,7 +30,7 @@ def get_model(model_name: str):
         raise ValueError(f"Unknown model name: {model_name}")
 
 
-def train_model(model, df: pd.Dataframe):
+def train_model(model, df: pd.DataFrame):
     """
     Train the unsupervised model.
     For KNN, return the neighbors as predictions. For clustering models, return cluster labels.

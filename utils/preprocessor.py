@@ -2,7 +2,6 @@
 
 import pandas as pd
 
-from .data_loader import DataLoader
 from modules.redundancy_checker import RedundancyChecker
 from config.constants import OUTPUT_FILE
 from .preprocessing_functions import to_dataframe, to_numerical
