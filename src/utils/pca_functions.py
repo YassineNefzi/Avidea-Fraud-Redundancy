@@ -1,6 +1,7 @@
 from sklearn.decomposition import PCA
 import matplotlib.pyplot as plt
 import streamlit as st
+import pandas as pd
 
 
 def apply_pca(df):
@@ -26,5 +27,18 @@ def plot_pca(pca_result, explained_variance, clusters) -> None:
     st.pyplot(plt)
 
 
-def investigate_pca():
-    pass
+def get_fraudulent_dataframe(df: pd.DataFrame, predictions, target):
+    """
+    Get the fraudulent data from the DataFrame.
+    """
+
+    df_fraud = df.copy()
+    df_fraud["Cluster"] = predictions
+    potential_frauds = df_fraud[df_fraud["Cluster"] == target]
+
+    small_clusters = df_fraud["Cluster"].value_counts().index[-1]
+    potential_frauds = df_fraud[df_fraud["Cluster"] == small_clusters]
+
+    fraud_row_numbers = potential_frauds.index.tolist()
+
+    return fraud_row_numbers, potential_frauds

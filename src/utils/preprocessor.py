@@ -8,13 +8,18 @@ from .preprocessing_functions import to_dataframe, to_numerical
 from ..models.pipeline import preprocessing_pipeline
 
 
-def process_file(df_flattened: pd.DataFrame, relevant_columns: str, group_column: str):
+def process_file(
+    df_flattened: pd.DataFrame,
+    relevant_columns: str,
+    group_column: str,
+    date_column: str = "report_accident_date",
+):
     """Process the flattened DataFrame for redundancy analysis."""
 
     if group_column not in df_flattened.columns:
         raise KeyError(f"Column not found: {group_column}")
 
-    df_filtered = df_flattened[relevant_columns + [group_column]]
+    df_filtered = df_flattened[relevant_columns + [group_column, date_column]]
 
     checker = RedundancyChecker(df_filtered, relevant_columns, group_column)
     checker.preprocess()

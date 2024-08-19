@@ -6,7 +6,7 @@ import pandas as pd
 from src.utils.preprocessor import process_file
 from src.utils.flatten_df import flatten_dataframe
 from src.utils.preprocessor import preprocessor
-from src.utils.pca_functions import apply_pca, plot_pca
+from src.utils.pca_functions import apply_pca, plot_pca, get_fraudulent_dataframe
 from src.models.unsupervised_models import train_model, get_model
 
 
@@ -84,6 +84,16 @@ def main():
 
                 st.write("PCA Plot:")
                 plot_pca(pca_result, explained_variance, clusters)
+
+                st.write("### Potential Fraudulent Data")
+                fraud_rows, fraud_df = get_fraudulent_dataframe(
+                    df_flattened, predictions, target=-1
+                )
+
+                st.write("Potential Fraudulent Data:")
+                st.write(fraud_df.head())
+                st.write("Fraudulent Rows:")
+                st.write(fraud_rows)
 
             except ValueError as e:
                 st.error(f"An error occurred during model training: {e}")
