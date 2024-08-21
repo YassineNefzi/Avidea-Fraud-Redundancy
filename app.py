@@ -3,9 +3,8 @@
 import streamlit as st
 import pandas as pd
 
-from src.utils.preprocessor import process_file
+from src.utils.preprocessor import process_file, preprocessor
 from src.utils.flatten_df import flatten_dataframe
-from src.utils.preprocessor import preprocessor
 from src.utils.pca_functions import apply_pca, plot_pca, get_fraudulent_dataframe
 from src.models.unsupervised_models import train_model, get_model
 

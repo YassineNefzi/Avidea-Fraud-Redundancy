@@ -1,9 +1,11 @@
 """This module contains the preprocessing pipeline for the unsuperivsed model."""
 
+import numpy as np
+import pandas as pd
 from sklearn.pipeline import Pipeline
 from sklearn.impute import SimpleImputer
-from sklearn.compose import ColumnTransformer
-from sklearn.preprocessing import StandardScaler
+from sklearn.compose import ColumnTransformer, make_column_selector
+from sklearn.preprocessing import StandardScaler, FunctionTransformer
 
 from ..utils.preprocessing_classes import (
     DropColumns,
@@ -12,8 +14,10 @@ from ..utils.preprocessing_classes import (
     ColumnThresholdDropper,
     IdentityConverter,
     PoliceGuardTransformer,
+    OutlierHandler,
     DateSplitter,
     CustomOrdinalEncoder,
+    ConvertToDataframe,
 )
 
 from ..config.constants import (
@@ -37,12 +41,10 @@ preprocessing_pipeline = Pipeline(
         ("debug_step4", DebugStep()),
         ("police_guard_transformer", PoliceGuardTransformer()),
         ("debug_step5", DebugStep()),
-        # ("plate_number_fe", PlateNumberFeatureEngineer()),
-        # ("debug_step6", DebugStep()),
         ("date_splitter", DateSplitter(date_columns=DATE_COLS)),
-        ("debug_step7", DebugStep()),
+        ("debug_step6", DebugStep()),
         (
-            "imputer",
+            "initial_imputer",
             ColumnTransformer(
                 transformers=[
                     ("num", SimpleImputer(strategy="mean"), NUMERICAL_COLS),
@@ -55,7 +57,38 @@ preprocessing_pipeline = Pipeline(
                 remainder="passthrough",
             ),
         ),
-        ("ordinal_encoder", CustomOrdinalEncoder(columns=CAT_COLS_AFTER_IMPUTING)),
+        (
+            "outlier_handler",
+            OutlierHandler(method="zscore", threshold=3.0, strategy="nan"),
+        ),
+        ("convert_to_dataframe", ConvertToDataframe()),
+        (
+            "second_imputer",
+            ColumnTransformer(
+                transformers=[
+                    (
+                        "num",
+                        SimpleImputer(strategy="mean"),
+                        make_column_selector(dtype_include=np.number),
+                    ),
+                ],
+                remainder="passthrough",
+            ),
+        ),
+        ("convert_to_dataframe2", ConvertToDataframe()),
+        (
+            "ordinal_encoder",
+            ColumnTransformer(
+                transformers=[
+                    (
+                        "cat",
+                        CustomOrdinalEncoder(),
+                        make_column_selector(dtype_include=object),
+                    ),
+                ],
+                remainder="passthrough",
+            ),
+        ),
         ("scaler", StandardScaler()),
     ]
 )

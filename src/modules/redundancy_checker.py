@@ -70,6 +70,10 @@ class RedundancyChecker:
                 )
                 grouped_sorted["combination_length"] = i
 
+                grouped_sorted = grouped_sorted[
+                    grouped_sorted["combination_length"] > 2
+                ]
+
                 if not grouped_sorted.empty:
                     results.append((combo, grouped_sorted))
         return results

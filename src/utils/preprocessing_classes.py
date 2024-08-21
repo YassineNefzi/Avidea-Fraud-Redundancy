@@ -153,6 +153,63 @@ class DateSplitter(BaseEstimator, TransformerMixin):
         return X
 
 
+class OutlierHandler(BaseEstimator, TransformerMixin):
+    def __init__(
+        self, columns=None, method="zscore", threshold=3.0, strategy="nan", value=None
+    ):
+        """
+        Parameters:
+        - columns: List of columns to check for outliers. If None, all columns are checked.
+        - method: Method to detect outliers ('zscore' or 'iqr').
+        - threshold: Threshold for determining outliers (z-score value or IQR multiplier).
+        - strategy: Strategy to handle outliers ('nan', 'value', or 'remove').
+        - value: Value to replace outliers with if strategy is 'value'.
+        """
+        self.columns = columns
+        self.method = method
+        self.threshold = threshold
+        self.strategy = strategy
+        self.value = value
+
+    def fit(self, X, y=None):
+        if isinstance(X, pd.DataFrame):
+            self.columns = X.select_dtypes(include=[np.number]).columns.tolist()
+        return self
+
+    def transform(self, X):
+        if isinstance(X, np.ndarray):
+            X = pd.DataFrame(X)
+
+        X = X.copy()
+        cols = (
+            self.columns
+            if self.columns
+            else X.select_dtypes(include=[np.number]).columns
+        )
+
+        for col in cols:
+            if self.method == "zscore":
+                z_scores = np.abs((X[col] - X[col].mean()) / X[col].std())
+                mask = z_scores > self.threshold
+            elif self.method == "iqr":
+                Q1 = X[col].quantile(0.25)
+                Q3 = X[col].quantile(0.75)
+                IQR = Q3 - Q1
+                mask = (X[col] < (Q1 - self.threshold * IQR)) | (
+                    X[col] > (Q3 + self.threshold * IQR)
+                )
+
+            if self.strategy == "nan":
+                X.loc[mask, col] = np.nan
+            elif self.strategy == "value":
+                X.loc[mask, col] = self.value
+            elif self.strategy == "remove":
+                X = X[~mask]
+                X = X.reset_index(drop=True)
+
+        return X
+
+
 class PlateNumberFeatureEngineer(BaseEstimator, TransformerMixin):
     """
     Transformer to engineer features from the plate number column.
@@ -285,13 +342,13 @@ class CustomOrdinalEncoder(BaseEstimator, TransformerMixin):
     def fit(self, X, y=None):
         if isinstance(X, pd.DataFrame):
             if self.columns:
-                X[self.columns] = X[self.columns].astype(str)  # Convert to strings
+                X[self.columns] = X[self.columns].astype(str)
                 self.encoder.fit(X[self.columns])
             else:
-                X = X.astype(str)  # Convert to strings
+                X = X.astype(str)
                 self.encoder.fit(X)
         else:
-            X = X.astype(str)  # Convert to strings if X is a NumPy array
+            X = X.astype(str)
             self.encoder.fit(X)
         return self
 
@@ -299,17 +356,36 @@ class CustomOrdinalEncoder(BaseEstimator, TransformerMixin):
         X_copy = X.copy()
         if isinstance(X_copy, pd.DataFrame):
             if self.columns:
-                X_copy[self.columns] = X_copy[self.columns].astype(
-                    str
-                )  # Convert to strings
+                X_copy[self.columns] = X_copy[self.columns].astype(str)
                 X_copy[self.columns] = self.encoder.transform(X_copy[self.columns])
             else:
-                X_copy = X_copy.astype(str)  # Convert to strings
+                X_copy = X_copy.astype(str)
                 X_copy = self.encoder.transform(X_copy)
         else:
-            X_copy = X_copy.astype(str)  # Convert to strings if X is a NumPy array
+            X_copy = X_copy.astype(str)
             X_copy = self.encoder.transform(X_copy)
         return X_copy
+
+
+class ConvertToDataframe(BaseEstimator, TransformerMixin):
+    def __init__(self, column_names=None):
+        self.column_names = column_names
+
+    def fit(self, X, y=None):
+        if isinstance(X, pd.DataFrame):
+            self.column_names = X.columns.tolist()
+        return self
+
+    def transform(self, X):
+        if isinstance(X, np.ndarray):
+            if self.column_names:
+                return pd.DataFrame(X, columns=self.column_names)
+            else:
+                return pd.DataFrame(X)
+        elif isinstance(X, pd.DataFrame):
+            return X
+        else:
+            raise ValueError("Input should be either a NumPy array or a DataFrame")
 
 
 class DebugStep(BaseEstimator, TransformerMixin):
