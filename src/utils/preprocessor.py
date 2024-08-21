@@ -4,7 +4,11 @@ import pandas as pd
 
 from ..modules.redundancy_checker import RedundancyChecker
 from ..config.constants import OUTPUT_FILE
-from .preprocessing_functions import to_dataframe, to_numerical
+from .preprocessing_functions import (
+    to_dataframe,
+    to_numerical,
+    filter_semi_duplicated_rows,
+)
 from ..models.pipeline import preprocessing_pipeline
 
 
@@ -37,7 +41,6 @@ def preprocessor(df: pd.DataFrame) -> pd.DataFrame:
     Returns:
     pd.DataFrame: DataFrame containing the pre-processed data.
     """
-
     df_transformed = preprocessing_pipeline.fit_transform(df)
     df_transformed = to_dataframe(df_transformed)
     df_transformed = to_numerical(df_transformed)

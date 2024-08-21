@@ -38,6 +38,37 @@ def flatten_json_column(df: pd.DataFrame, column_name: str) -> pd.DataFrame:
     return df_merged
 
 
+def filter_semi_duplicated_rows(
+    df: pd.DataFrame, report_col: str, vehicle_col: str, casualty_col: str
+) -> pd.DataFrame:
+    """Filter out semi-duplicated rows that represent valid accidents with multiple vehicles or casualties.
+    Args:
+    df (pd.DataFrame): Input flattened DataFrame.
+    report_col (str): Column name representing the report number.
+    vehicle_col (str): Column name representing the vehicle ID.
+    casualty_col (str): Column name representing the casualty ID.
+    Returns:
+    pd.DataFrame: Filtered DataFrame with semi-duplicated rows removed.
+    """
+
+    grouped_df = (
+        df.groupby(report_col)
+        .agg(
+            num_vehicles=(vehicle_col, "nunique"),
+            num_casualties=(casualty_col, "nunique"),
+        )
+        .reset_index()
+    )
+
+    valid_reports = grouped_df[
+        (grouped_df["num_vehicles"] <= 4) & (grouped_df["num_casualties"] <= 4)
+    ]
+
+    filtered_df = df[df[report_col].isin(valid_reports[report_col])]
+
+    return filtered_df
+
+
 def to_dataframe(df) -> pd.DataFrame:
     """Function to transform the pre-processed data into a DataFrame.
     Returns:
