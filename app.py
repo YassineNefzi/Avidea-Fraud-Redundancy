@@ -25,9 +25,9 @@ def main():
         st.write("Flattened DataFrame:")
         st.write(df_flattened.head())
         st.write(f"Shape: {df_flattened.shape}")
-        st.write("Filtered DataFrame:")
-        st.write(df_filtered.head())
-        st.write(f"Shape: {df_filtered.shape}")
+        # st.write("Filtered DataFrame:")
+        # st.write(df_filtered.head())
+        # st.write(f"Shape: {df_filtered.shape}")
 
         relevant_columns = st.multiselect(
             "Select Columns for Combination Analysis",
@@ -68,7 +68,7 @@ def main():
         )
 
         if st.button("Train Model"):
-            df_preprocessed = preprocessor(df_filtered)
+            df_preprocessed = preprocessor(df_flattened)
             st.write("Preprocessed Data:")
             st.write(df_preprocessed.head())
             model = get_model(model_name)
@@ -94,13 +94,24 @@ def main():
 
                 st.write("### Potential Fraudulent Data")
                 fraud_rows, fraud_df = get_fraudulent_dataframe(
-                    df_filtered, predictions, target=-1
+                    df_flattened, predictions, target=-1
                 )
 
                 st.write("Potential Fraudulent Data:")
                 st.write(fraud_df.head())
                 st.write("Fraudulent Rows:")
                 st.write(fraud_rows)
+
+                st.write("### Fraudulent Rows in Original Data:")
+                for row in fraud_rows:
+                    st.write("Row Number:", row)
+                    st.write("Data:")
+                    st.write(
+                        df_flattened[
+                            df_flattened["vehicles_plate_number"]
+                            == df_flattened.iloc[row]["vehicles_plate_number"]
+                        ]
+                    )
 
             except ValueError as e:
                 st.error(f"An error occurred during model training: {e}")

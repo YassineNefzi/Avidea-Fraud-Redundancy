@@ -57,25 +57,25 @@ preprocessing_pipeline = Pipeline(
                 remainder="passthrough",
             ),
         ),
-        (
-            "outlier_handler",
-            OutlierHandler(method="zscore", threshold=3.0, strategy="nan"),
-        ),
+        # (
+        #     "outlier_handler",
+        #     OutlierHandler(method="zscore", threshold=3.0, strategy="nan"),
+        # ),
         ("convert_to_dataframe", ConvertToDataframe()),
-        (
-            "second_imputer",
-            ColumnTransformer(
-                transformers=[
-                    (
-                        "num",
-                        SimpleImputer(strategy="mean"),
-                        make_column_selector(dtype_include=np.number),
-                    ),
-                ],
-                remainder="passthrough",
-            ),
-        ),
-        ("convert_to_dataframe2", ConvertToDataframe()),
+        # (
+        #     "second_imputer",
+        #     ColumnTransformer(
+        #         transformers=[
+        #             (
+        #                 "num",
+        #                 SimpleImputer(strategy="mean"),
+        #                 make_column_selector(dtype_include=np.number),
+        #             ),
+        #         ],
+        #         remainder="passthrough",
+        #     ),
+        # ),
+        # ("convert_to_dataframe2", ConvertToDataframe()),
         (
             "ordinal_encoder",
             ColumnTransformer(

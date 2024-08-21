@@ -19,9 +19,11 @@ def get_model(model_name: str):
     """
 
     if model_name == "KNN":
-        return NearestNeighbors(n_neighbors=5)
+        return NearestNeighbors(n_neighbors=2)
     elif model_name == "DBSCAN":
-        return DBSCAN(eps=0.5, min_samples=5)
+        return DBSCAN(
+            eps=1.5, leaf_size=30, min_samples=10
+        )  # eps=0.5, min_samples=5 # eps=1.5, leaf_size=30, min_samples=10
     elif model_name == "One-Class SVM":
         return OneClassSVM(kernel="rbf", gamma=0.1, nu=0.05)
     elif model_name == "Isolation Forest":
